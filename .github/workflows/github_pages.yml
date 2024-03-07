@@ -1,0 +1,53 @@
+name: Deploy to Github Pages
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Node installation
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Dependencies installation
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+          dir: ./
+
+      - name: Lint
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: lint
+          dir: ./
+
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: 'dist'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
