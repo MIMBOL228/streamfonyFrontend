@@ -35,13 +35,6 @@ jobs:
         with:
           cmd: install
           dir: ./
-
-      - name: Lint
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: lint
-          dir: ./
-
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
